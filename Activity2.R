@@ -87,9 +87,65 @@ floods %>%
   plot(dateF, gheight.ft)
 
 #Question 2:
-earliest.date <- floods %>% 
+#attempt ----
+catagories = c(action.ft, flood.ft, moderate.ft, major.ft)
+
+earliest_df = a
+
+earliest_df = data.frame(unique(floods$names))
+
+for(var in catagories){
+  earliest <- floods %>% 
+    group_by(names) %>%
+    filter(gheight.ft - var >= 0) %>%
+    summarise(earliest = min(dateF))
+  earliest
+}
+#----
+earliest.action <- floods %>% 
   group_by(names) %>%
-  filter(gheight.ft >= flood.ft) %>%
-  summarise(earliest = min(dateF))
-earliest.date
+  filter(gheight.ft - action.ft >= 0) %>%
+  summarise(earliest_action = min(dateF)) 
+earliest.action
+
+earliest.flood <- floods %>% 
+  group_by(names) %>%
+  filter(gheight.ft - flood.ft >= 0) %>%
+  summarise(earliest_flood = min(dateF)) 
+earliest.flood
+
+earliest.moderate <- floods %>% 
+  group_by(names) %>%
+  filter(gheight.ft - moderate.ft >= 0) %>%
+  summarise(earliest_moderate = min(dateF))
+earliest.moderate
+
+earliest.major <- floods %>% 
+  group_by(names) %>%
+  filter(gheight.ft - major.ft >= 0) %>%
+  summarise(earliest_major = min(dateF))
+earliest.major
+
+earliest_df <- left_join(earliest.action,
+                          earliest.flood, 
+                          by="names") %>%
+  left_join(., 
+            earliest.moderate, 
+            by="names") %>%
+  left_join(.,
+            earliest.major,
+            by="names")
+
+#Question 3 -Which river had the highest stream stage above its listed height in the major flood category?
+heighest <- floods %>%
+  
+
+#Question 4 - Learning to read the R documentation and online resources is a major part of coding. Use Google or
+#run help or ? in R to find the official R documentation for the following functions: select in the
+#dplyr package, ifelse , and hist . Write a brief plain language explanation of what the function
+#does, describe the key arguments needed to run the function, and provide an example use case using
+#the flood data.
+
+
+#Question 5 -Copy the url for your R script from GitHub and paste it here
 
