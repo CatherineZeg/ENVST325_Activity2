@@ -93,45 +93,36 @@ for(x in 1:4) {
 
 
 #Question 2:
-#attempt ----
-catagories = c(action.ft, flood.ft, moderate.ft, major.ft)
 
-earliest_df = a
-
-earliest_df = data.frame(unique(floods$names))
-
-for(var in catagories){
-  earliest <- floods %>% 
-    group_by(names) %>%
-    filter(gheight.ft - var >= 0) %>%
-    summarise(earliest = min(dateF))
-  earliest
-}
-#----
+#Creates df of each rivers earliest action reporting
 earliest.action <- floods %>% 
   group_by(names) %>%
   filter(gheight.ft - action.ft >= 0) %>%
   summarise(earliest_action = min(dateF)) 
 earliest.action
 
+#Creates df of each rivers earliest flood reporting
 earliest.flood <- floods %>% 
   group_by(names) %>%
   filter(gheight.ft - flood.ft >= 0) %>%
   summarise(earliest_flood = min(dateF)) 
 earliest.flood
 
+#Creates df of each rivers earliest moderate reporting
 earliest.moderate <- floods %>% 
   group_by(names) %>%
   filter(gheight.ft - moderate.ft >= 0) %>%
   summarise(earliest_moderate = min(dateF))
 earliest.moderate
 
+#Creates df of each rivers earliest major reporting
 earliest.major <- floods %>% 
   group_by(names) %>%
   filter(gheight.ft - major.ft >= 0) %>%
   summarise(earliest_major = min(dateF))
 earliest.major
 
+#joins all the earliest dfs into one
 earliest_df <- left_join(earliest.action,
                           earliest.flood, 
                           by="names") %>%
@@ -141,6 +132,8 @@ earliest_df <- left_join(earliest.action,
   left_join(.,
             earliest.major,
             by="names")
+
+earliest_df
 
 #Question 3:
 
