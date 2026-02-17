@@ -74,17 +74,23 @@ earliest.flood <- floods %>%
 earliest.flood
 
 
+
 #HW ----
 
-help(plot)
+#Question 1: 
 
-#Question 1: Make a separate plot of the stream stage data for each river.
-plot(peaceH$dateF, peaceH$gheight.ft, type="b", pch=19, xlab="Date",
-     ylab = "Stage height (ft)")
+#creates a list of each river name
+flood_names <- unique(floods$names)
 
-floods %>%
-  group_by(names) %>%
-  plot(dateF, gheight.ft)
+#iterates through each river to create a plot of its stream stage data
+for(x in 1:4) {
+  sub_df <- floods %>%
+    filter(names == flood_names[x])
+  
+  plot(sub_df$dateF, sub_df$gheight.ft, type="b", pch=19, xlab="Date",
+       ylab = "Stage height (ft)", main = flood_names[x], )  
+}
+
 
 #Question 2:
 #attempt ----
@@ -136,16 +142,30 @@ earliest_df <- left_join(earliest.action,
             earliest.major,
             by="names")
 
-#Question 3 -Which river had the highest stream stage above its listed height in the major flood category?
+#Question 3:
+
+#finds the greatest difference above its major category for each river 
 heighest <- floods %>%
-  
+  group_by(names) %>%
+  filter(gheight.ft > major.ft) %>%
+  summarize(greatest_diff = max(gheight.ft - major.ft))
 
-#Question 4 - Learning to read the R documentation and online resources is a major part of coding. Use Google or
-#run help or ? in R to find the official R documentation for the following functions: select in the
-#dplyr package, ifelse , and hist . Write a brief plain language explanation of what the function
-#does, describe the key arguments needed to run the function, and provide an example use case using
-#the flood data.
+#sorts the data frame in descending order, putting the river with the greatest difference at the top
+heighest <- heighest[order(heighest$greatest_diff, decreasing = TRUE),]
 
+#prints the first observation, the river with the greatest difference
+print(cat("THe river with the highest stage above its major level is ", 
+          heighest$names[1], "with ", heighest$greatest_diff[1], "ft."))
 
-#Question 5 -Copy the url for your R script from GitHub and paste it here
+#Question 4:
 
+#example use of select function: selecting the name column and columns ending with .ft
+select_df <- select(floods, names, ends_with(".ft"))
+
+#example use of if else function: adding column that labels the observation as dangerous
+#if the gheight exceeds the major value, and not dangerous otherwise
+select_df$classification <- ifelse(select_df$gheight.ft>=select_df$major.ft, "dangerous", "not dangerous")
+
+#example use of the hist function: histogram of gheights
+hist(select_df$gheight.ft, col = "orange", main = "Histogram", 
+     xlab = "gheight in ft")
